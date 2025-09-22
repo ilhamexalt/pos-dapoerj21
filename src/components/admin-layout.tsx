@@ -8,6 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import {
   TooltipProvider,
@@ -101,6 +102,27 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator className="md:hidden block" />
+            <DropdownMenuItem className="md:hidden block">
+              <Link href="/admin">Dashboard</Link>
+            </DropdownMenuItem>
+            {user?.email === "ilhamexalt33@gmail.com" && (
+              <div className="md:hidden block">
+                <DropdownMenuItem>
+                  <Link href="/admin/cashier">Cashier</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/admin/products">Products</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/admin/orders">Orders</Link>
+                </DropdownMenuItem>
+              </div>
+            )}
+
+            <DropdownMenuItem className="md:hidden block">
+              <Link href="/admin/pos">Pos</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <form>
               <Button
