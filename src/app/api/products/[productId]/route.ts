@@ -21,7 +21,7 @@ export async function PUT(
     .from('products')
     .update({ ...updatedProduct, user_uid: user.id })
     .eq('id', productId)
-    .eq('user_uid', user.id)
+    // .eq('user_uid', user.id)
     .select()
 
   if (error) {
@@ -64,7 +64,7 @@ export async function DELETE(
     .from('products')
     .delete()
     .eq('id', productId)
-    .eq('user_uid', user.id)
+  // .eq('user_uid', user.id)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -74,7 +74,7 @@ export async function DELETE(
     .from('orders')
     .delete()
     .eq('id', orderId)
-    .eq('user_uid', user.id)
+  // .eq('user_uid', user.id)
 
   if (orderDelete.error) {
     return NextResponse.json({ error: orderDelete.error.message }, { status: 500 })
