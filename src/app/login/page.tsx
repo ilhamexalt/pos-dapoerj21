@@ -10,8 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MountainIcon } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
+import Logo from "../../../public/dapoer-j21.png";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -27,8 +28,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="mx-auto w-full max-w-md space-y-6">
         <div className="flex flex-col items-center space-y-2">
-          <MountainIcon className="h-10 w-10" />
-          <h2 className="text-2xl font-bold">Welcome back</h2>
+          <Image src={Logo} alt="Dapoer J-21" width={200} height={200} />
           <p className="text-muted-foreground">
             Enter your email and password to sign in.
           </p>
