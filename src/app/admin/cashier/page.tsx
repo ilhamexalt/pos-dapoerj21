@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/select";
 import { useAuthStore } from "@/lib/store/auth";
 
-type TransactionType = "income" | "expense";
+type TransactionType = "income" | "outcome";
 
 interface Transaction {
   id: number;
@@ -62,6 +62,7 @@ export default function Cashier() {
   const [transactionToDelete, setTransactionToDelete] =
     useState<Transaction | null>(null);
   const [loading, setLoading] = useState(true);
+  const [submit, setSubmit] = useState(false);
   const [newTransaction, setNewTransaction] = useState<Partial<Transaction>>({
     description: "",
     category: "",
@@ -77,7 +78,7 @@ export default function Cashier() {
   };
 
   const handleAddTransaction = async () => {
-    setLoading(true);
+    setSubmit(true);
     try {
       const response = await fetch("/api/transactions", {
         method: "POST",
@@ -86,7 +87,6 @@ export default function Cashier() {
         },
         body: JSON.stringify(newTransaction),
       });
-
       if (response.ok) {
         const addedTransaction = await response.json();
         setTransactions((prev) => [...prev, addedTransaction]);
@@ -98,17 +98,15 @@ export default function Cashier() {
           status: "completed",
         });
       } else {
-        console.error("Failed to add transaction");
       }
-      setLoading(false);
+      setSubmit(false);
     } catch (error) {
-      console.error("Error adding transaction:", error);
-      setLoading(false);
+      setSubmit(false);
     }
   };
 
   const handleDeleteTransaction = useCallback(async () => {
-    setLoading(true);
+    setSubmit(true);
     if (!transactionToDelete) return;
     try {
       const response = await fetch(
@@ -125,12 +123,10 @@ export default function Cashier() {
         setIsDeleteConfirmationOpen(false);
         setTransactionToDelete(null);
       } else {
-        console.error("Failed to delete transaction");
       }
-      setLoading(false);
+      setSubmit(false);
     } catch (error) {
-      setLoading(false);
-      console.error("Error deleting transaction:", error);
+      setSubmit(false);
     }
   }, [transactionToDelete, transactions]);
 
@@ -309,7 +305,9 @@ export default function Cashier() {
                   </Select>
                 </TableCell>
                 <TableCell>
-                  <Button onClick={handleAddTransaction}>Add</Button>
+                  <Button onClick={handleAddTransaction} disabled={submit}>
+                    {submit ? "Submitting" : "Add"}
+                  </Button>
                 </TableCell>
               </TableRow>
             </TableBody>
