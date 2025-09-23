@@ -41,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuthStore } from "@/lib/store/auth";
 
 type TransactionType = "income" | "expense";
 
@@ -68,6 +69,7 @@ export default function Cashier() {
     amount: 0,
     status: "completed",
   });
+  const user = useAuthStore((s) => s.user);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -225,14 +227,16 @@ export default function Cashier() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setTransactionToDelete(transaction);
-                            setIsDeleteConfirmationOpen(true);
-                          }}
-                        >
-                          Delete
-                        </DropdownMenuItem>
+                        {user?.email === "ilhamexalt33@gmail.com" && (
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setTransactionToDelete(transaction);
+                              setIsDeleteConfirmationOpen(true);
+                            }}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

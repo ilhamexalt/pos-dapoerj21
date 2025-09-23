@@ -30,6 +30,7 @@ import {
 import { logout } from "@/app/login/actions";
 import { useAuthStore } from "@/lib/store/auth";
 import { useEffect, useState } from "react";
+import Logo from "../../public/dapoer-j21.png";
 
 const pageNames: { [key: string]: string } = {
   "/admin": "Dashboard",
@@ -64,7 +65,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           href="/admin"
           className="flex items-center gap-2 text-lg font-semibold"
         >
-          <Package2Icon className="h-6 w-6" />
+          <Image src={Logo} alt="Dapoer J-21" width={40} height={40} priority />
           <span className="sr-only">Admin Panel</span>
         </Link>
         <h1 className="text-xl font-bold flex flex-col">
