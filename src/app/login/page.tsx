@@ -13,15 +13,31 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Image from "next/image";
 import Logo from "../../../public/dapoer-j21.png";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [hidden, setHidden] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    await login(formData);
+    try {
+      setLoading(true);
+      const formData = new FormData(e.currentTarget);
+      await login(formData);
+    } catch (error) {
+      setLoading(false);
+      setOpenDialog(true);
+    }
   };
 
   return (
@@ -42,13 +58,31 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder="name@gmail.com"
                   required
                 />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" name="password" type="password" required />
+                <div className="relative flex items-center">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={hidden ? "password" : "text"}
+                    required
+                  />
+                  {hidden ? (
+                    <EyeClosedIcon
+                      className="cursor-pointer active:text-blue-700 absolute right-5"
+                      onClick={() => setHidden(false)}
+                    />
+                  ) : (
+                    <EyeOpenIcon
+                      className="cursor-pointer active:text-blue-700 absolute right-5"
+                      onClick={() => setHidden(true)}
+                    />
+                  )}
+                </div>
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
@@ -61,13 +95,31 @@ export default function LoginPage() {
               </Link>
               <div className="space-x-2">
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Loading..." : "Sign in"}
+                  {loading ? "Loading" : "Sign in"}
                 </Button>
               </div>
             </CardFooter>
           </form>
         </Card>
       </div>
+
+      <Dialog open={openDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-xs md:text-lg text-left">
+              Failed
+            </DialogTitle>
+            <DialogDescription className="text-xs md:text-sm text-left text-red-600">
+              Your username or password is incorrect. Please try again.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpenDialog(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

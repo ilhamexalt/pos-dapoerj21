@@ -251,7 +251,7 @@ export default function POSPage() {
                 loading
               }
             >
-              {loading ? "Processing..." : "Create Order"}
+              {loading ? "Processing" : "Create Order"}
             </Button>
           </div>
         </CardContent>

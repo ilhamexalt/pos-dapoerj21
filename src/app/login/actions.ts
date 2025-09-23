@@ -4,12 +4,11 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
+import { NextResponse } from 'next/server'
 
 export async function login(formData: FormData) {
   const supabase = createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
@@ -18,7 +17,8 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    redirect('/error')
+    return NextResponse.json({ error: error.message }, { status: 401 })
+    // redirect('/error')
   }
 
   revalidatePath('/admin', 'layout')

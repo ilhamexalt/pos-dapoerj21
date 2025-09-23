@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     .from('transactions')
     .select('amount, category, status, user_uid')
     .eq('status', 'completed')
-    .eq('type', 'expense')
+    .eq('type', 'outcome')
   // .eq('user_uid', user.id);
 
   if (expensesError) {

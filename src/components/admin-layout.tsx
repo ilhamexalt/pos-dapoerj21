@@ -106,11 +106,11 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuItem className="md:hidden block">
               <Link href="/admin">Dashboard</Link>
             </DropdownMenuItem>
+            <DropdownMenuItem className="md:hidden block">
+              <Link href="/admin/cashier">Cashier</Link>
+            </DropdownMenuItem>
             {user?.email === "ilhamexalt33@gmail.com" && (
               <div className="md:hidden block">
-                <DropdownMenuItem>
-                  <Link href="/admin/cashier">Cashier</Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href="/admin/products">Products</Link>
                 </DropdownMenuItem>
@@ -157,24 +157,24 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                 </TooltipTrigger>
                 <TooltipContent side="right">Dashboard</TooltipContent>
               </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/admin/cashier"
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      pathname === "/admin/cashier"
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground"
+                    } transition-colors hover:text-foreground md:h-8 md:w-8`}
+                  >
+                    <DollarSignIcon className="h-5 w-5" />
+                    <span className="sr-only">Cashier</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">Cashier</TooltipContent>
+              </Tooltip>
               {user?.email === "ilhamexalt33@gmail.com" && (
                 <>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Link
-                        href="/admin/cashier"
-                        className={`flex h-9 w-9 items-center justify-center rounded-lg ${
-                          pathname === "/admin/cashier"
-                            ? "bg-accent text-accent-foreground"
-                            : "text-muted-foreground"
-                        } transition-colors hover:text-foreground md:h-8 md:w-8`}
-                      >
-                        <DollarSignIcon className="h-5 w-5" />
-                        <span className="sr-only">Cashier</span>
-                      </Link>
-                    </TooltipTrigger>
-                    <TooltipContent side="right">Cashier</TooltipContent>
-                  </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
@@ -191,25 +191,26 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                     </TooltipTrigger>
                     <TooltipContent side="right">Products</TooltipContent>
                   </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href="/admin/orders"
+                        className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                          pathname === "/admin/orders"
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground"
+                        } transition-colors hover:text-foreground md:h-8 md:w-8`}
+                      >
+                        <ShoppingBagIcon className="h-5 w-5" />
+                        <span className="sr-only">Orders</span>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">Orders</TooltipContent>
+                  </Tooltip>
                 </>
               )}
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href="/admin/orders"
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
-                      pathname === "/admin/orders"
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground"
-                    } transition-colors hover:text-foreground md:h-8 md:w-8`}
-                  >
-                    <ShoppingBagIcon className="h-5 w-5" />
-                    <span className="sr-only">Orders</span>
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">Orders</TooltipContent>
-              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link

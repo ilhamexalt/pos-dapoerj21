@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const { data: expensesData, error: expensesError } = await supabase
     .from('transactions')
     .select('amount')
-    .eq('type', 'expense')
+    .eq('type', 'outcome')
     // .eq('user_uid', user.id)
     .eq('status', 'completed');
 

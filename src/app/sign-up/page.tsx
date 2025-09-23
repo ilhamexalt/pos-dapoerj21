@@ -10,20 +10,36 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MountainIcon } from "lucide-react";
 import { useState } from "react";
 import Logo from "../../../public/dapoer-j21.png";
 import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    const response = await signup(formData);
-    alert("Check your email for a confirmation link.");
+    try {
+      setLoading(true);
+      const formData = new FormData(e.currentTarget);
+      await signup(formData);
+      setOpenDialog(true);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setOpenDialog(true);
+    }
   };
 
   return (
@@ -44,13 +60,31 @@ export default function SignUpPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder="name@gmail.com"
                   required
                 />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" name="password" type="password" required />
+                <div className="relative flex items-center">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={hidden ? "password" : "text"}
+                    required
+                  />
+                  {hidden ? (
+                    <EyeClosedIcon
+                      className="cursor-pointer active:text-blue-700 absolute right-5"
+                      onClick={() => setHidden(false)}
+                    />
+                  ) : (
+                    <EyeOpenIcon
+                      className="cursor-pointer active:text-blue-700 absolute right-5"
+                      onClick={() => setHidden(true)}
+                    />
+                  )}
+                </div>
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
@@ -63,13 +97,31 @@ export default function SignUpPage() {
               </Link>
               <div className="space-x-2">
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Loading..." : "Sign up"}
+                  {loading ? "Loading" : "Sign up"}
                 </Button>
               </div>
             </CardFooter>
           </form>
         </Card>
       </div>
+
+      <Dialog open={openDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-xs md:text-lg text-left">
+              Success
+            </DialogTitle>
+            <DialogDescription className="text-xs md:text-sm text-left">
+              Check your email for a confirmation link.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Link href="/login">
+              <Button variant="outline">Close</Button>
+            </Link>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

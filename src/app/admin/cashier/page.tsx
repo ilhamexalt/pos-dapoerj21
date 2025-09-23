@@ -75,6 +75,7 @@ export default function Cashier() {
   };
 
   const handleAddTransaction = async () => {
+    setLoading(true);
     try {
       const response = await fetch("/api/transactions", {
         method: "POST",
@@ -97,12 +98,15 @@ export default function Cashier() {
       } else {
         console.error("Failed to add transaction");
       }
+      setLoading(false);
     } catch (error) {
       console.error("Error adding transaction:", error);
+      setLoading(false);
     }
   };
 
   const handleDeleteTransaction = useCallback(async () => {
+    setLoading(true);
     if (!transactionToDelete) return;
     try {
       const response = await fetch(
@@ -121,7 +125,9 @@ export default function Cashier() {
       } else {
         console.error("Failed to delete transaction");
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error deleting transaction:", error);
     }
   }, [transactionToDelete, transactions]);
@@ -265,7 +271,7 @@ export default function Cashier() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="income">Income</SelectItem>
-                      <SelectItem value="expense">Expense</SelectItem>
+                      <SelectItem value="outcome">Outcome</SelectItem>
                     </SelectContent>
                   </Select>
                 </TableCell>
