@@ -22,6 +22,7 @@ export default function Layout({
         data: { user },
       } = await supabase.auth.getUser();
       hydrateUser(user);
+      console.log("Current user:", user);
       if (!user) {
         router.push("/login");
       }

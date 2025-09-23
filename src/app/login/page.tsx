@@ -87,11 +87,12 @@ export default function LoginPage() {
             </CardContent>
             <CardFooter className="flex justify-between">
               <Link
-                href="/sign-up"
+                // href="/sign-up"
+                href="/"
                 className="text-sm text-muted-foreground"
                 prefetch={false}
               >
-                Don&apos;t have an account?
+                {/* Don&apos;t have an account? */}
               </Link>
               <div className="space-x-2">
                 <Button type="submit" disabled={loading}>
