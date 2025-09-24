@@ -49,7 +49,7 @@ export default function LoginPage() {
             Enter your email and password to sign in.
           </p>
         </div>
-        <Card>
+        <Card className="border-none shadow-none">
           <form onSubmit={handleLogin}>
             <CardContent className="space-y-4 mt-4">
               <div className="grid gap-2">
@@ -58,7 +58,7 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="name@gmail.com"
+                  placeholder="email@gmail.com"
                   required
                 />
               </div>
@@ -69,6 +69,7 @@ export default function LoginPage() {
                     id="password"
                     name="password"
                     type={hidden ? "password" : "text"}
+                    placeholder="***"
                     required
                   />
                   {hidden ? (
@@ -85,17 +86,17 @@ export default function LoginPage() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
-              <Link
-                // href="/sign-up"
+            <CardFooter className="flex">
+              {/* <Link
+                href="/sign-up"
                 href="/"
                 className="text-sm text-muted-foreground"
                 prefetch={false}
               >
-                {/* Don&apos;t have an account? */}
-              </Link>
-              <div className="space-x-2">
-                <Button type="submit" disabled={loading}>
+                Don&apos;t have an account?
+              </Link> */}
+              <div className="space-x-2 w-full">
+                <Button className="w-full" type="submit" disabled={loading}>
                   {loading ? "Loading" : "Sign in"}
                 </Button>
               </div>
