@@ -190,7 +190,14 @@ export default function Cashier() {
                   <TableCell>
                     <Badge variant={transaction.type}>{transaction.type}</Badge>
                   </TableCell>
-                  <TableCell>{formatDate(transaction.created_at)}</TableCell>
+                  <TableCell className="w-28">
+                    {
+                      new Date(transaction.created_at)
+                        .toISOString()
+                        .split("T")[0]
+                      // formatDate(transaction.created_at)
+                    }
+                  </TableCell>
                   <TableCell>
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",

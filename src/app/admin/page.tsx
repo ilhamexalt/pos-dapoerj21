@@ -30,6 +30,7 @@ export default function Page() {
   const [expensesByCategory, setExpensesByCategory] = useState({});
   const [profitMargin, setProfitMargin] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cash, setCash] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +43,7 @@ export default function Page() {
           revenueByCategoryRes,
           expensesByCategoryRes,
           profitMarginRes,
+          cashRes,
         ] = await Promise.all([
           fetch("/api/admin/revenue/total"),
           fetch("/api/admin/expenses/total"),
@@ -50,6 +52,7 @@ export default function Page() {
           fetch("/api/admin/revenue/category"),
           fetch("/api/admin/expenses/category"),
           fetch("/api/admin/profit/margin"),
+          fetch("/api/cash"),
         ]);
 
         const revenue = await revenueRes.json();
@@ -59,6 +62,7 @@ export default function Page() {
         const revenueByCategoryData = await revenueByCategoryRes.json();
         const expensesByCategoryData = await expensesByCategoryRes.json();
         const profitMarginData = await profitMarginRes.json();
+        const cash = await cashRes.json();
 
         setTotalRevenue(revenue?.totalRevenue);
         setTotalExpenses(expenses?.totalExpenses);
@@ -72,6 +76,7 @@ export default function Page() {
         setRevenueByCategory(revenueByCategoryData.revenueByCategory);
         setExpensesByCategory(expensesByCategoryData.expensesByCategory);
         setProfitMargin(profitMarginData.profitMargin);
+        setCash(cash[0]?.nominal || 0);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -92,7 +97,7 @@ export default function Page() {
 
   return (
     <div className="grid flex-1 items-start gap-4">
-      <div className="grid auto-rows-max items-start gap-4 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="grid auto-rows-max items-start gap-4 lg:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -136,6 +141,20 @@ export default function Page() {
                 currency: "IDR",
                 minimumFractionDigits: 0,
               }).format(totalProfit || 1)}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Cash on Hand</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(cash || 1)}
             </div>
           </CardContent>
         </Card>

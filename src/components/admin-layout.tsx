@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -19,13 +18,12 @@ import {
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import {
-  Package2Icon,
-  SearchIcon,
   LayoutDashboardIcon,
   DollarSignIcon,
   PackageIcon,
   ShoppingCartIcon,
   ShoppingBagIcon,
+  Package2Icon,
 } from "lucide-react";
 import { logout } from "@/app/login/actions";
 import { useAuthStore } from "@/lib/store/auth";
@@ -38,6 +36,7 @@ const pageNames: { [key: string]: string } = {
   "/admin/orders": "Orders",
   "/admin/pos": "Point of Sale",
   "/admin/cashier": "Cashier",
+  "/admin/cash": "Cash",
 };
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -111,6 +110,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuItem className="md:hidden block">
               <Link href="/admin/cashier">Cashier</Link>
             </DropdownMenuItem>
+
             {user?.email === "ilhamexalt33@gmail.com" && (
               <div className="md:hidden block">
                 <DropdownMenuItem>
@@ -125,7 +125,16 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuItem className="md:hidden block">
               <Link href="/admin/pos">Pos</Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+
+            {user?.email === "ilhamexalt33@gmail.com" && (
+              <div>
+                <DropdownMenuItem className="md:hidden block">
+                  <Link href="/admin/cash">Cash</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </div>
+            )}
+
             <form>
               <Button
                 variant={"ghost"}
@@ -229,6 +238,24 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                 </TooltipTrigger>
                 <TooltipContent side="right">Point of Sale</TooltipContent>
               </Tooltip>
+              {user?.email === "ilhamexalt33@gmail.com" && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href="/admin/cash"
+                      className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                        pathname === "/admin/cash"
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground"
+                      } transition-colors hover:text-foreground md:h-8 md:w-8`}
+                    >
+                      <Package2Icon className="h-5 w-5" />
+                      <span className="sr-only">Cash</span>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Cash</TooltipContent>
+                </Tooltip>
+              )}
             </TooltipProvider>
           </nav>
         </aside>
