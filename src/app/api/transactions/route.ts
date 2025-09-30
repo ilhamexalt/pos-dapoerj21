@@ -40,6 +40,26 @@ export async function POST(request: Request) {
     ])
     .select()
 
+  const { data: dataCash, error: Cash } = await supabase
+    .from('cash')
+    .select(`
+      id,
+      nominal,
+      updated_at
+      `)
+
+  if (!dataCash || dataCash.length === 0) {
+    return NextResponse.json({ error: 'No cash data found' }, { status: 404 })
+  }
+
+  const cashUpdate = newTransaction.type === 'outcome' ? parseInt(dataCash[0].nominal) - parseInt(newTransaction.amount) : parseInt(dataCash[0].nominal) + parseInt(newTransaction.amount);
+
+  await supabase
+    .from('cash')
+    .update({ nominal: cashUpdate, updated_at: new Date().toISOString() })
+    .eq('id', dataCash[0].id)
+    .single()
+
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

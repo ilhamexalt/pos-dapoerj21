@@ -79,20 +79,20 @@ export default function Cashier() {
 
   const handleAddTransaction = async () => {
     if (
-      newTransaction.type === undefined ||
-      newTransaction.type === null ||
-      newTransaction.type === "income"
-    ) {
-      alert("Transaction type cannot be empty or income");
-      return;
-    }
-
-    if (
       newTransaction.category === undefined ||
       newTransaction.category === null ||
       newTransaction.category === "selling"
     ) {
       alert("Category cannot be empty or selling");
+      return;
+    }
+
+    if (
+      newTransaction.type === undefined ||
+      newTransaction.type === null ||
+      newTransaction.type === "income"
+    ) {
+      alert("Transaction type cannot be empty or income");
       return;
     }
 
