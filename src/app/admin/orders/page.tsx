@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/store/auth";
+import { createClient as createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type Order = {
   id: number;
@@ -96,6 +97,37 @@ export default function OrdersPage() {
     };
 
     fetchOrders();
+    // Realtime subscription for orders
+    const supabase = createSupabaseBrowserClient();
+    const channel = supabase
+      .channel("orders-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders" },
+        (payload: any) => {
+          setOrders((prev) => {
+            if (payload.eventType === "INSERT") {
+              const newOrder = payload.new as Order;
+              if (prev.some((o) => o.id === newOrder.id)) return prev;
+              return [...prev, newOrder];
+            }
+            if (payload.eventType === "UPDATE") {
+              const updated = payload.new as Order;
+              return prev.map((o) => (o.id === updated.id ? updated : o));
+            }
+            if (payload.eventType === "DELETE") {
+              const deleted = payload.old as Order;
+              return prev.filter((o) => o.id !== (deleted as any).id);
+            }
+            return prev;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const filteredOrders = useMemo(() => {

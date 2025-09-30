@@ -18,6 +18,7 @@ import {
   Line,
   LineChart,
 } from "recharts";
+import { createClient as createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function Page() {
   const [totalRevenue, setTotalRevenue] = useState(0);
@@ -85,6 +86,35 @@ export default function Page() {
     };
 
     fetchData();
+
+    // Realtime subscriptions: transactions affect most cards and charts; cash affects Cash on Hand
+    const supabase = createSupabaseBrowserClient();
+    const transactionsChannel = supabase
+      .channel("transactions-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "transactions" },
+        () => {
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    const cashChannel = supabase
+      .channel("cash-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "cash" },
+        () => {
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(transactionsChannel);
+      supabase.removeChannel(cashChannel);
+    };
   }, []);
 
   if (loading) {

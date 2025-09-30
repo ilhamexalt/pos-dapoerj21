@@ -13,6 +13,7 @@ import {
 import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogOverlay } from "@/components/ui/dialog";
+import { createClient as createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type Product = {
   id: number;
@@ -146,6 +147,35 @@ export default function POSPage() {
   useEffect(() => {
     fetchProducts();
     fetchPaymentMethods();
+
+    // Realtime subscription for products and payment methods
+    const supabase = createSupabaseBrowserClient();
+    const productsChannel = supabase
+      .channel("products-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "products" },
+        () => {
+          fetchProducts();
+        }
+      )
+      .subscribe();
+
+    const paymentMethodsChannel = supabase
+      .channel("payment-methods-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "payment_methods" },
+        () => {
+          fetchPaymentMethods();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(productsChannel);
+      supabase.removeChannel(paymentMethodsChannel);
+    };
   }, []);
 
   return (

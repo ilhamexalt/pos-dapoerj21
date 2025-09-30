@@ -78,6 +78,24 @@ export default function Cashier() {
   };
 
   const handleAddTransaction = async () => {
+    if (
+      newTransaction.type === undefined ||
+      newTransaction.type === null ||
+      newTransaction.type === "income"
+    ) {
+      alert("Transaction type cannot be empty or income");
+      return;
+    }
+
+    if (
+      newTransaction.category === undefined ||
+      newTransaction.category === null ||
+      newTransaction.category === "selling"
+    ) {
+      alert("Category cannot be empty or selling");
+      return;
+    }
+
     setSubmit(true);
     try {
       const response = await fetch("/api/transactions", {
@@ -93,7 +111,7 @@ export default function Cashier() {
         setNewTransaction({
           description: "",
           category: "",
-          type: "income",
+          type: "outcome",
           amount: 0,
           status: "completed",
         });
@@ -130,22 +148,22 @@ export default function Cashier() {
     }
   }, [transactionToDelete, transactions]);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch("/api/transactions");
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions");
-        }
-        const data = await response.json();
-        setTransactions(data);
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-      } finally {
-        setLoading(false);
+  const fetchTransactions = async () => {
+    try {
+      const response = await fetch("/api/transactions");
+      if (!response.ok) {
+        throw new Error("Failed to fetch transactions");
       }
-    };
+      const data = await response.json();
+      setTransactions(data);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTransactions();
   }, []);
 
