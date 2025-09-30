@@ -37,11 +37,11 @@ export default function OfflinePage() {
           <div className="mx-auto mb-4 w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
             <WifiOff className="w-8 h-8 text-gray-500" />
           </div>
-          <CardTitle className="text-xl">You're Offline</CardTitle>
+          <CardTitle className="text-xl">You`re Offline</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-center text-gray-600">
-            It looks like you're not connected to the internet. Some features
+            It looks like you`re not connected to the internet. Some features
             may not be available.
           </p>
 
