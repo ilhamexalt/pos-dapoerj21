@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { addPWANotification } from "@/components/pwa-notifications";
 
 type Cash = {
   id: string;
@@ -44,8 +45,26 @@ const Cash = () => {
 
       fetchCash();
       setSubmit(false);
+
+      addPWANotification({
+        title: "Cash Updated",
+        message: `Cash amount updated to ${new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(Number(nominal))}`,
+        type: "success",
+        action: "cash-update",
+      });
+
       alert("Cash updated successfully");
     } catch (error) {
+      addPWANotification({
+        title: "Cash Update Failed",
+        message: `Failed to update cash: ${error}`,
+        type: "error",
+        action: "cash-update-error",
+      });
       alert(error);
       setSubmit(false);
     }

@@ -42,6 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuthStore } from "@/lib/store/auth";
+import { addPWANotification } from "@/components/pwa-notifications";
 
 type TransactionType = "income" | "outcome";
 
@@ -115,10 +116,29 @@ export default function Cashier() {
           amount: 0,
           status: "completed",
         });
+
+        addPWANotification({
+          title: "Transaction Added",
+          message: `New ${newTransaction.type} transaction added: ${newTransaction.description}`,
+          type: "success",
+          action: "cashier-transaction-add",
+        });
       } else {
+        addPWANotification({
+          title: "Transaction Failed",
+          message: "Failed to add transaction",
+          type: "error",
+          action: "cashier-transaction-add-error",
+        });
       }
       setSubmit(false);
     } catch (error) {
+      addPWANotification({
+        title: "Transaction Error",
+        message: `Error adding transaction: ${error}`,
+        type: "error",
+        action: "cashier-transaction-error",
+      });
       setSubmit(false);
     }
   };
@@ -140,10 +160,29 @@ export default function Cashier() {
         );
         setIsDeleteConfirmationOpen(false);
         setTransactionToDelete(null);
+
+        addPWANotification({
+          title: "Transaction Deleted",
+          message: `Transaction #${transactionToDelete.id} has been deleted`,
+          type: "warning",
+          action: "cashier-transaction-delete",
+        });
       } else {
+        addPWANotification({
+          title: "Delete Failed",
+          message: "Failed to delete transaction",
+          type: "error",
+          action: "cashier-transaction-delete-error",
+        });
       }
       setSubmit(false);
     } catch (error) {
+      addPWANotification({
+        title: "Delete Error",
+        message: `Error deleting transaction: ${error}`,
+        type: "error",
+        action: "cashier-transaction-delete-error",
+      });
       setSubmit(false);
     }
   }, [transactionToDelete, transactions]);

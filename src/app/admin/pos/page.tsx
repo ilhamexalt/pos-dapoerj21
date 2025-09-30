@@ -14,6 +14,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogOverlay } from "@/components/ui/dialog";
 import { createClient as createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { addPWANotification } from "@/components/pwa-notifications";
 
 type Product = {
   id: number;
@@ -78,8 +79,20 @@ export default function POSPage() {
           p.id === productId ? { ...p, quantity: p.quantity + 1 } : p
         )
       );
+      addPWANotification({
+        title: "Product Quantity Updated",
+        message: `Increased quantity for ${product.name}`,
+        type: "info",
+        action: "pos-product-update",
+      });
     } else {
       setSelectedProducts([...selectedProducts, { ...product, quantity: 1 }]);
+      addPWANotification({
+        title: "Product Added",
+        message: `Added ${product.name} to cart`,
+        type: "success",
+        action: "pos-product-add",
+      });
     }
   };
 
@@ -87,19 +100,43 @@ export default function POSPage() {
     const method = paymentMethods.find((pm) => pm.id === paymentMethodId);
     if (method) {
       setPaymentMethod(method);
+      addPWANotification({
+        title: "Payment Method Selected",
+        message: `Selected ${method.name} as payment method`,
+        type: "info",
+        action: "pos-payment-method",
+      });
     }
   };
 
   const handleQuantityChange = (productId: number, newQuantity: number) => {
+    const product = selectedProducts.find((p) => p.id === productId);
     setSelectedProducts(
       selectedProducts.map((p) =>
         p.id === productId ? { ...p, quantity: newQuantity } : p
       )
     );
+    if (product) {
+      addPWANotification({
+        title: "Quantity Changed",
+        message: `Updated ${product.name} quantity to ${newQuantity}`,
+        type: "info",
+        action: "pos-quantity-change",
+      });
+    }
   };
 
   const handleRemoveProduct = (productId: number) => {
+    const product = selectedProducts.find((p) => p.id === productId);
     setSelectedProducts(selectedProducts.filter((p) => p.id !== productId));
+    if (product) {
+      addPWANotification({
+        title: "Product Removed",
+        message: `Removed ${product.name} from cart`,
+        type: "warning",
+        action: "pos-product-remove",
+      });
+    }
   };
 
   const total = selectedProducts.reduce(
@@ -137,8 +174,29 @@ export default function POSPage() {
       // Reset the form
       setSelectedProducts([]);
       setPaymentMethod(null);
+
+      addPWANotification({
+        title: "Order Created Successfully",
+        message: `Order #${order.id} created with total ${new Intl.NumberFormat(
+          "id-ID",
+          {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+          }
+        ).format(total)}`,
+        type: "success",
+        action: "pos-order-create",
+      });
+
       alert(`Order #${order.id} created successfully!`);
     } catch (error) {
+      addPWANotification({
+        title: "Order Creation Failed",
+        message: `Failed to create order: ${error}`,
+        type: "error",
+        action: "pos-order-error",
+      });
       alert(error);
     }
     setLoading(false);

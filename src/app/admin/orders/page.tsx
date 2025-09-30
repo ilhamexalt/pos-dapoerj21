@@ -52,6 +52,7 @@ import {
 import Link from "next/link";
 import { useAuthStore } from "@/lib/store/auth";
 import { createClient as createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { addPWANotification } from "@/components/pwa-notifications";
 
 type Order = {
   id: number;
@@ -168,7 +169,26 @@ export default function OrdersPage() {
       setOrders([...orders, createdOrder]);
       setShowNewOrderDialog(false);
       resetSelectedOrder();
+
+      addPWANotification({
+        title: "Order Created",
+        message: `New order #${
+          createdOrder.id
+        } created with total ${new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(createdOrder.total_amount)}`,
+        type: "success",
+        action: "order-create",
+      });
     } catch (error) {
+      addPWANotification({
+        title: "Order Creation Failed",
+        message: `Failed to create order: ${error}`,
+        type: "error",
+        action: "order-create-error",
+      });
       alert(error);
     }
   }, [newOrderTotal, newOrderStatus, orders]);
@@ -200,7 +220,20 @@ export default function OrdersPage() {
       );
       setIsEditOrderDialogOpen(false);
       resetSelectedOrder();
+
+      addPWANotification({
+        title: "Order Updated",
+        message: `Order #${updatedOrderData.id} has been updated successfully`,
+        type: "success",
+        action: "order-update",
+      });
     } catch (error) {
+      addPWANotification({
+        title: "Order Update Failed",
+        message: `Failed to update order: ${error}`,
+        type: "error",
+        action: "order-update-error",
+      });
       console.error(error);
     }
   }, [selectedOrderId, newOrderTotal, newOrderStatus, orders]);
@@ -219,7 +252,20 @@ export default function OrdersPage() {
       setOrders(orders.filter((o) => o.id !== orderToDelete.id));
       setIsDeleteConfirmationOpen(false);
       setOrderToDelete(null);
+
+      addPWANotification({
+        title: "Order Deleted",
+        message: `Order #${orderToDelete.id} has been deleted successfully`,
+        type: "warning",
+        action: "order-delete",
+      });
     } catch (error) {
+      addPWANotification({
+        title: "Order Deletion Failed",
+        message: `Failed to delete order: ${error}`,
+        type: "error",
+        action: "order-delete-error",
+      });
       console.error(error);
     }
   }, [orderToDelete, orders]);

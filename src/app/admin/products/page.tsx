@@ -52,6 +52,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { addPWANotification } from "@/components/pwa-notifications";
 
 interface Product {
   id: number;
@@ -117,10 +118,29 @@ export default function Products() {
         setProducts([...products, addedProduct]);
         setIsAddProductDialogOpen(false);
         resetSelectedProduct();
+
+        addPWANotification({
+          title: "Product Added",
+          message: `New product "${addedProduct.name}" has been added successfully`,
+          type: "success",
+          action: "product-add",
+        });
       } else {
+        addPWANotification({
+          title: "Add Product Failed",
+          message: "Failed to add product",
+          type: "error",
+          action: "product-add-error",
+        });
         console.error("Failed to add product");
       }
     } catch (error) {
+      addPWANotification({
+        title: "Product Error",
+        message: `Error adding product: ${error}`,
+        type: "error",
+        action: "product-add-error",
+      });
       console.error("Error adding product:", error);
     }
   }, [
@@ -160,10 +180,29 @@ export default function Products() {
         );
         setIsEditProductDialogOpen(false);
         resetSelectedProduct();
+
+        addPWANotification({
+          title: "Product Updated",
+          message: `Product "${updatedProductFromServer.name}" has been updated successfully`,
+          type: "success",
+          action: "product-update",
+        });
       } else {
+        addPWANotification({
+          title: "Update Failed",
+          message: "Failed to update product",
+          type: "error",
+          action: "product-update-error",
+        });
         console.error("Failed to update product");
       }
     } catch (error) {
+      addPWANotification({
+        title: "Update Error",
+        message: `Error updating product: ${error}`,
+        type: "error",
+        action: "product-update-error",
+      });
       console.error("Error updating product:", error);
     }
   }, [
@@ -187,10 +226,29 @@ export default function Products() {
         setProducts(products.filter((p) => p.id !== productToDelete.id));
         setIsDeleteConfirmationOpen(false);
         setProductToDelete(null);
+
+        addPWANotification({
+          title: "Product Deleted",
+          message: `Product "${productToDelete.name}" has been deleted successfully`,
+          type: "warning",
+          action: "product-delete",
+        });
       } else {
+        addPWANotification({
+          title: "Delete Failed",
+          message: "Failed to delete product",
+          type: "error",
+          action: "product-delete-error",
+        });
         console.error("Failed to delete product");
       }
     } catch (error) {
+      addPWANotification({
+        title: "Delete Error",
+        message: `Error deleting product: ${error}`,
+        type: "error",
+        action: "product-delete-error",
+      });
       console.error("Error deleting product:", error);
     }
   }, [productToDelete, products]);
