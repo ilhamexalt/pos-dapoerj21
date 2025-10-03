@@ -1,89 +1,98 @@
-# POS and Inventory Management System
+## Environment Variables
 
-This is a Point of Sale (POS) and Inventory Management System built with Next.js, React, and Supabase. It provides a comprehensive solution for managing products, customers, orders, and transactions in a retail or small business setting.
+Buat file `.env` (atau `.env.local`) di root proyek dan isi dengan:
 
-As a developer with extensive experience in creating similar applications, this project represents the culmination of years of expertise in building POS systems. Of course, in the beginning the project seem a little raw, but with time and hopefully with the help of the community, it will become a robust and feature-rich solution for businesses of all sizes.
+```
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
 
-This particular iteration embraces the spirit of open-source development, making it freely available for the community to use, modify, and improve upon.
+Contoh tersedia di `.env.example`.
+
+# Welcome to React Router!
+
+A modern, production-ready template for building full-stack React applications using React Router.
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
 ## Features
 
-- **Dashboard**: Overview of key metrics and charts
-- **Products Management**: Add, edit, delete, and view products
-- **Customer Management**: Manage customer information and status
-- **Order Management**: Create and manage orders
-- **Point of Sale (POS)**: Quick and easy sales processing
-- **User Authentication**: Secure login system
-
-## Tech Stack
-
-- **Frontend**: Next.js, React, Tailwind CSS
-- **Backend**: Supabase (PostgreSQL database)
-- **State Management**: React Hooks
-- **UI Components**: Custom components and Shadcn UI
-- **Charts**: Recharts
+- 🚀 Server-side rendering
+- ⚡️ Hot Module Replacement (HMR)
+- 📦 Asset bundling and optimization
+- 🔄 Data loading and mutations
+- 🔒 TypeScript by default
+- 🎉 TailwindCSS for styling
+- 📖 [React Router docs](https://reactrouter.com/)
 
 ## Getting Started
 
-1. Clone the repository
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Set up your Supabase project and add the necessary environment variables:
-   - Create a `.env.local` file in the root of your project
-   - Add the following lines to the file:
-     ```
-     NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-     ```
-   - Replace `your_supabase_project_url` and `your_supabase_anon_key` with your actual Supabase project URL and anon key
-4. Run the development server:
-   ```
-   npm run dev
-   ```
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+### Installation
 
-## Project Structure
+Install the dependencies:
 
-- `src/app/`: Next.js app router pages
-- `src/components/`: Reusable React components
-- `src/lib/`: Utility functions and Supabase client
-- `schema.sql`: Database schema
+```bash
+npm install
+```
 
-## Key Pages
+### Development
 
-- `/admin`: Main dashboard
-- `/admin/products`: Product management
-- `/admin/customers`: Customer management
-- `/admin/orders`: Order management
-- `/admin/pos`: Point of Sale interface
+Start the development server with HMR:
 
-## Database Schema
+```bash
+npm run dev
+```
 
-The project uses a PostgreSQL database with the following main tables:
+Your application will be available at `http://localhost:5173`.
 
-- `products`: Store product information
-- `customers`: Customer details
-- `orders`: Order information
-- `order_items`: Items within each order
-- `transactions`: Financial transactions
-- `payment_methods`: Available payment methods
+## Building for Production
 
-For the complete schema, refer to `schema.sql`.
+Create a production build:
 
-## Authentication
+```bash
+npm run build
+```
 
-User authentication is handled through Supabase. The login page is available at `/login`.
+## Deployment
 
-## Error Handling
+### Docker Deployment
 
-A basic error page is implemented at `/error` to handle and display any errors that occur during runtime.
+To build and run using Docker:
 
-## Contributing
+```bash
+docker build -t my-app .
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+# Run the container
+docker run -p 3000:3000 my-app
+```
 
-## License
+The containerized application can be deployed to any platform that supports Docker, including:
 
-This project is open source and available under the [MIT License](LICENSE).
+- AWS ECS
+- Google Cloud Run
+- Azure Container Apps
+- Digital Ocean App Platform
+- Fly.io
+- Railway
+
+### DIY Deployment
+
+If you're familiar with deploying Node applications, the built-in app server is production-ready.
+
+Make sure to deploy the output of `npm run build`
+
+```
+├── package.json
+├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
+├── build/
+│   ├── client/    # Static assets
+│   └── server/    # Server-side code
+```
+
+## Styling
+
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+
+---
+
+Built with ❤️ using React Router.
