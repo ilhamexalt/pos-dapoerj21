@@ -6,12 +6,8 @@
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  @apply bg-white;
   font-family: var(--font-sans) !important;
-
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
 }
 
 /* Pastikan Ant Design dan elemen formulir ikut memakai Montserrat */

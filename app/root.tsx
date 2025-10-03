@@ -394,7 +394,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         />
                       </div>
                     }
-                    overlayInnerStyle={{ width: 320 }}
+                    styles={{ body: { width: 300 } }}
                   >
                     <Badge
                       count={notifications?.length}
@@ -414,7 +414,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </>
             )}
 
-            <div className="p-6">{children}</div>
+            <div>{children}</div>
           </div>
         </div>
 
