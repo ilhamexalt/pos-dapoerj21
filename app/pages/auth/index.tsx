@@ -92,10 +92,10 @@ export default function Auth() {
     <Card
       style={{
         margin: "auto",
-        marginTop: 80,
+        marginTop: "200px",
         // backgroundColor: "#4caf50",
       }}
-      className="w-3/4 md:w-1/2"
+      className="w-10/12 md:w-1/2"
     >
       {contextHolder}
       <div className="w-full flex justify-center">

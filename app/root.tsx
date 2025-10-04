@@ -23,6 +23,7 @@ import {
   RightCircleOutlined,
   ShoppingCartOutlined,
   UserOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 import {
   Badge,
@@ -41,7 +42,11 @@ import { isSessionValid } from "./utils/auth";
 import { Utils } from "./utils/format";
 import { getCashOnHand } from "./pages/dashboard/actions";
 import { getSupabaseClient } from "./services/supabase";
-import { getUnreadNotifications, readNotification } from "./actions";
+import {
+  getUnreadNotifications,
+  readNotification,
+  sendNotification,
+} from "./actions";
 import { formatDistanceToNow } from "date-fns";
 import boomSound from "./assets/sound/boom-boom-bakudan.mp3";
 import "@ant-design/v5-patch-for-react-19";
@@ -196,8 +201,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
       openNotificationWithIcon("error", res.message);
     }
 
-    const newNotifications = notifications.filter((n) => n.id !== id);
+    const newNotifications = notifications
+      .filter((n) => n.id !== id)
+      .sort(
+        (a, b) =>
+          new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
+      );
     setNotifications(newNotifications);
+  };
+
+  const handleSendNotification = async () => {
+    const res = await sendNotification();
+    if (res.statusCode !== 200) {
+      openNotificationWithIcon("error", res.message);
+    } else {
+      openNotificationWithIcon("success", res.message);
+    }
   };
 
   useEffect(() => {
@@ -302,15 +321,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   <img src={Logo} width={50} height={50} alt="Dapoer J21" />
 
                   {path.map((item) => (
-                    <Tooltip title={item.name} placement="rightTop">
-                      <NavLink
-                        key={item.id}
-                        to={item.url}
-                        className={"text-emerald-600 text-sm md:text-xl"}
-                      >
-                        {item.icon}
-                      </NavLink>
-                    </Tooltip>
+                    <div key={item.id}>
+                      <Tooltip title={item.name} placement="rightTop">
+                        <NavLink
+                          key={item.id}
+                          to={item.url}
+                          className={"text-emerald-600 text-sm md:text-xl"}
+                        >
+                          {item.icon}
+                        </NavLink>
+                      </Tooltip>
+                    </div>
                   ))}
 
                   <button
@@ -331,11 +352,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 {/* Header */}
                 <div className="py-4 px-8 md:py-6 md:px-10 w-full flex justify-end gap-6 items-center">
                   <p className="text-sm md:text-md bg-emerald-50 px-4 py-2 rounded-xl">
-                    COH Rp {cashOnHand[0]?.nominal}
+                    COH{" "}
+                    {cashOnHand[0]?.nominal
+                      ? new Intl.NumberFormat("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        }).format(cashOnHand[0].nominal)
+                      : "-"}
                   </p>
 
                   <Popover
-                    placement="bottomLeft"
+                    placement="bottom"
                     trigger="click"
                     title={
                       <div className="flex justify-center">Notifications</div>
@@ -356,13 +385,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
                             >
                               <List.Item.Meta
                                 title={
-                                  <Typography.Title
-                                    level={5}
+                                  <Typography.Text
                                     type="secondary"
                                     style={{ fontSize: 14, color: "gray" }}
                                   >
                                     {Utils().capitalizeEachWord(item.title)}
-                                  </Typography.Title>
+                                  </Typography.Text>
                                 }
                                 description={
                                   <>
@@ -377,10 +405,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                                     <br />
                                     <Typography.Text
                                       type="secondary"
-                                      style={{
-                                        fontSize: 10,
-                                        color: "gray",
-                                      }}
+                                      style={{ fontSize: 10, color: "gray" }}
                                     >
                                       {formatDistanceToNow(item.created_at, {
                                         addSuffix: true,
@@ -445,7 +470,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </>
             }
-          />
+          >
+            <Button
+              htmlType="button"
+              type="primary"
+              title="Send Notification"
+              onClick={() => {
+                handleSendNotification();
+              }}
+              style={{ width: "100%" }}
+            >
+              <SendOutlined /> Send Notification
+            </Button>
+          </Drawer>
         )}
 
         <ScrollRestoration />
