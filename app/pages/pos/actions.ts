@@ -55,7 +55,7 @@ export async function createOrderWithItemsAndTransaction(
         status: "pending",
         category: "selling",
         type: "income",
-        description: "POS order",
+        description: `Payment For Order #${payload.product_id}`,
     });
     if (errTrx) return { statusCode: 400, message: errTrx.message };
 

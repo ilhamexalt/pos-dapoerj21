@@ -1,7 +1,6 @@
 
 
 import { getSupabaseClient } from "./services/supabase";
-import { Utils } from "./utils/format";
 
 const TABLE = "notifications";
 

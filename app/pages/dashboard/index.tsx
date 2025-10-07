@@ -9,10 +9,11 @@ import {
   BarChart,
   ResponsiveContainer,
 } from "recharts";
-import { getDailyIncome, getIncomeOutcome } from "./actions";
+import { getCashOnHand, getDailyIncome, getIncomeOutcome } from "./actions";
 import { useEffect, useState } from "react";
 import { Utils } from "~/utils/format";
 import { notification, Spin } from "antd";
+import { useCashOnHandStore } from "~/stores/cash-on-hand";
 
 function BarchartChart({ data }: { data: any[] }) {
   return (
@@ -65,6 +66,9 @@ export default function Dashboard() {
   const [api, contextHolder] = notification.useNotification();
   const [loadingIncomeOutcome, setLoadingIncomeOutcome] = useState(false);
   const [loadingDailyIncome, setLoadingDailyIncome] = useState(false);
+  const [cashOnHand, setCashOnHand] = useState<
+    { nominal: number; updated_at: string }[]
+  >([]);
 
   const openNotificationWithIcon = (
     type: NotificationType,
@@ -101,9 +105,26 @@ export default function Dashboard() {
     setLoadingDailyIncome(false);
   };
 
+  const loadCashOnHand = async () => {
+    const res = await getCashOnHand();
+    if (res.statusCode !== 200) {
+      openNotificationWithIcon("error", res.message);
+    } else {
+      const { setCashOnHand } = useCashOnHandStore.getState();
+      const item = res.data?.[0];
+      if (item) {
+        setCashOnHand({
+          nominal: item.nominal,
+          updated_at: item.updated_at,
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     loadIncomeOutcome();
     loadDailyIncome();
+    loadCashOnHand();
   }, []);
 
   return (

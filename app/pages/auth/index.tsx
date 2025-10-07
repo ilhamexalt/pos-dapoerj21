@@ -62,11 +62,6 @@ export default function Auth() {
           },
         });
       }
-
-      openNotificationWithIcon(
-        "success",
-        response?.message || "Login berhasil"
-      );
       navigate("/");
     } catch (error: unknown) {
       const message =
@@ -92,10 +87,10 @@ export default function Auth() {
     <Card
       style={{
         margin: "auto",
-        marginTop: "200px",
+        marginTop: "80px",
         // backgroundColor: "#4caf50",
       }}
-      className="w-10/12 md:w-1/2"
+      className="w-10/12 md:w-1/2 bg-red-600 rounded-md shadow-2xl"
     >
       {contextHolder}
       <div className="w-full flex justify-center">
@@ -126,7 +121,7 @@ export default function Auth() {
 
         <Form.Item label={null}>
           <Button
-            className="w-full"
+            className="w-full mt-2"
             type="primary"
             htmlType="submit"
             loading={loading}

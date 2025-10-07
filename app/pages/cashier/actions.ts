@@ -64,6 +64,22 @@ export async function createTransaction(
         return { statusCode: 400, message: error.message };
     }
 
+    const { data: cashData } = await supabase
+        .from("cash")
+        .select("id, nominal")
+        .single();
+
+    const newNominal = (cashData?.nominal || 0) - payload.amount;
+
+
+    await supabase
+        .from("cash")
+        .update({
+            nominal: newNominal,
+            updated_at: Utils().getJakartaTimeISO(),
+        })
+        .eq("id", cashData?.id);
+
     await supabase
         .from("notifications")
         .insert({

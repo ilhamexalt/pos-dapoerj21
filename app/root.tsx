@@ -40,7 +40,6 @@ import { logout } from "./pages/auth/actions";
 import { useAuthStore } from "./stores/auth";
 import { isSessionValid } from "./utils/auth";
 import { Utils } from "./utils/format";
-import { getCashOnHand } from "./pages/dashboard/actions";
 import { getSupabaseClient } from "./services/supabase";
 import {
   getUnreadNotifications,
@@ -50,6 +49,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import boomSound from "./assets/sound/boom-boom-bakudan.mp3";
 import "@ant-design/v5-patch-for-react-19";
+import { useCashOnHandStore } from "./stores/cash-on-hand";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -111,11 +111,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const session = useAuthStore((s) => s.session);
   const [isClient, setIsClient] = useState(false);
   const [api, contextHolder] = notification.useNotification();
-  const [cashOnHand, setCashOnHand] = useState<
-    { nominal: number; updated_at: string }[]
-  >([]);
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isLogout, setIsLogout] = useState<boolean>(false);
+  const { cashOnHand } = useCashOnHandStore.getState();
 
   const openNotificationWithIcon = (
     type: NotificationType,
@@ -128,6 +128,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = async () => {
+    setIsLogout(true);
     const res = await logout();
     if (res.statusCode !== 200) {
       openNotificationWithIcon("error", res.message);
@@ -135,25 +136,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
     }
     setOpenDrawer(false);
     clearAuth();
+    // localStorage.removeItem("cashOnHand");
+    setIsLogout(false);
     navigate("/login");
-  };
-
-  const loadCashOnHand = async () => {
-    const res = await getCashOnHand();
-    if (res.statusCode !== 200) {
-      openNotificationWithIcon("error", res.message);
-    } else {
-      setCashOnHand(
-        res.data
-          ? [
-              {
-                nominal: res.data[0].nominal,
-                updated_at: res.data[0].updated_at,
-              },
-            ]
-          : []
-      );
-    }
   };
 
   const getNotifications = (
@@ -263,7 +248,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setIsClient(true);
-    loadCashOnHand();
   }, []);
 
   const showShell = !hideLayout && isClient && isSessionValid(session);
@@ -353,13 +337,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <div className="py-4 px-8 md:py-6 md:px-10 w-full flex justify-end gap-6 items-center">
                   <p className="text-sm md:text-md bg-emerald-50 px-4 py-2 rounded-xl">
                     COH{" "}
-                    {cashOnHand[0]?.nominal
+                    {cashOnHand?.nominal
                       ? new Intl.NumberFormat("id-ID", {
                           style: "currency",
                           currency: "IDR",
                           minimumFractionDigits: 0,
                           maximumFractionDigits: 0,
-                        }).format(cashOnHand[0].nominal)
+                        }).format(cashOnHand?.nominal)
                       : "-"}
                   </p>
 
@@ -465,8 +449,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => {
                     handleLogout();
                   }}
+                  disabled={isLogout}
+                  loading={isLogout}
                 >
-                  <LogoutOutlined />
+                  {!isLogout && <LogoutOutlined />}
                 </Button>
               </>
             }
